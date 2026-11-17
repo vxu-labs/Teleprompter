@@ -1,6 +1,8 @@
 # Teleprompter
 
-A browser teleprompter with a Hebrew interface, support for Hebrew and Arabic scripts, and mirror modes for use with a beam splitter or an inverted display. The application is a single HTML file with no build step or external dependencies.
+A browser teleprompter with an interface in English, Hebrew, Arabic, German, Spanish, French and Russian, automatic script direction, and mirror modes for use with a beam splitter or an inverted display. The application is a single HTML file with no build step or external dependencies.
+
+[Open Teleprompter online](https://teleprompter.vxu.me/)
 
 ## Run locally
 
@@ -14,7 +16,7 @@ Then open <http://127.0.0.1:8000/>. On a shared computer, use a private browser 
 
 ## Use it
 
-1. Open the editor from the toolbar, paste or type your script, and choose **שמירה והצגה**.
+1. Choose the interface language in the toolbar. Open the editor, paste or type your script, and choose **Save and display**.
 2. Set the font, text size, margins, colors, and scroll speed.
 3. Start scrolling with the play button. Use horizontal or vertical mirroring if your display setup requires it.
 

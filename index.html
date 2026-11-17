@@ -1,12 +1,12 @@
 <!doctype html>
-<html lang="he" dir="rtl">
+<html lang="en" dir="ltr">
 <head>
   <meta charset="utf-8">
-  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-S4/8qQMj4MJJSND2hOuWCmsK01Y3qFdEb1QJM2eyB0Q='; style-src 'unsafe-inline'; base-uri 'none'; form-action 'none'">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-IHuZBC63H4q3rKR7KikLElwObv7YHB5xXNEXqv09b1g='; style-src 'unsafe-inline'; base-uri 'none'; form-action 'none'">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <meta name="description" content="טלפרומפטר מקומי עם גלילה אוטומטית, תמיכה בעברית ובערבית ומצב מראה.">
+  <meta name="description" content="A browser teleprompter with automatic scrolling, mirror modes and a seven-language interface.">
   <meta name="theme-color" content="#050505">
-  <title>טלפרומפטר</title>
+  <title>Teleprompter</title>
   <style>
     :root {
       color-scheme: dark;
@@ -51,9 +51,8 @@
       position: relative;
       z-index: 10;
       display: flex;
-      direction: rtl;
       align-items: center;
-      justify-content: center;
+      justify-content: safe center;
       gap: 12px;
       min-height: 76px;
       padding: 8px 14px;
@@ -171,7 +170,6 @@
     }
 
     .script {
-      direction: rtl;
       unicode-bidi: plaintext;
       width: auto;
       margin-inline: var(--side-margin);
@@ -181,7 +179,7 @@
       font-size: var(--font-size);
       font-weight: 600;
       line-height: 1.42;
-      text-align: right;
+      text-align: start;
       white-space: pre-wrap;
       overflow-wrap: break-word;
       word-break: normal;
@@ -265,9 +263,8 @@
       background: #050505;
       color: #fff;
       font-family: var(--script-font);
-      direction: rtl;
       unicode-bidi: plaintext;
-      text-align: right;
+      text-align: start;
       font-size: 24px;
       line-height: 1.55;
     }
@@ -311,54 +308,66 @@
 </head>
 <body>
   <main class="app" id="app">
-    <nav class="toolbar" aria-label="פקדי טלפרומפטר">
-      <button class="tool-button play-button" id="play" type="button" aria-label="הפעלה" title="הפעלה / עצירה (רווח)">▶</button>
-      <button class="tool-button" id="edit" type="button" aria-label="עריכת הטקסט" title="עריכת הטקסט">☰</button>
-      <button class="tool-button" id="mirrorX" type="button" aria-label="היפוך אופקי" aria-pressed="false" title="היפוך אופקי">⇆</button>
-      <button class="tool-button" id="mirrorY" type="button" aria-label="היפוך אנכי" aria-pressed="false" title="היפוך אנכי">⇅</button>
-      <button class="tool-button" id="fullscreen" type="button" aria-label="מסך מלא" title="מסך מלא (F)">⛶</button>
+    <nav class="toolbar" data-i18n-label="controls" aria-label="Teleprompter controls">
+      <label class="control">
+        <select id="language" data-i18n-label="language" aria-label="Interface language">
+          <option value="en" lang="en">English</option>
+          <option value="he" lang="he">עברית</option>
+          <option value="ar" lang="ar">العربية</option>
+          <option value="de" lang="de">Deutsch</option>
+          <option value="es" lang="es">Español</option>
+          <option value="fr" lang="fr">Français</option>
+          <option value="ru" lang="ru">Русский</option>
+        </select>
+        <span data-i18n="language">Interface language</span>
+      </label>
+      <button class="tool-button play-button" id="play" type="button" data-i18n-label="play" aria-label="Play" data-i18n-title="playTitle" title="Play / pause (Space)">▶</button>
+      <button class="tool-button" id="edit" type="button" data-i18n-label="edit" aria-label="Edit script" data-i18n-title="edit" title="Edit script">☰</button>
+      <button class="tool-button" id="mirrorX" type="button" data-i18n-label="mirrorX" aria-label="Mirror horizontally" aria-pressed="false" data-i18n-title="mirrorX" title="Mirror horizontally">⇆</button>
+      <button class="tool-button" id="mirrorY" type="button" data-i18n-label="mirrorY" aria-label="Mirror vertically" aria-pressed="false" data-i18n-title="mirrorY" title="Mirror vertically">⇅</button>
+      <button class="tool-button" id="fullscreen" type="button" data-i18n-label="fullscreen" aria-label="Fullscreen" data-i18n-title="fullscreenTitle" title="Fullscreen (F)">⛶</button>
 
       <span class="divider" aria-hidden="true"></span>
 
       <label class="control color-control">
-        <input id="bgColor" type="color" value="#050505" aria-label="צבע רקע">
-        <span>צבע רקע</span>
+        <input id="bgColor" type="color" value="#050505" data-i18n-label="background" aria-label="Background color">
+        <span data-i18n="background">Background color</span>
       </label>
       <label class="control color-control">
-        <input id="textColor" type="color" value="#f5f5f5" aria-label="צבע טקסט">
-        <span>צבע טקסט</span>
+        <input id="textColor" type="color" value="#f5f5f5" data-i18n-label="textColor" aria-label="Text color">
+        <span data-i18n="textColor">Text color</span>
       </label>
       <label class="control">
-        <select id="fontFamily" aria-label="פונט לטקסט">
-          <option value="document">פונט מהמסמך</option>
+        <select id="fontFamily" data-i18n-label="font" aria-label="Font">
+          <option value="document" data-i18n="documentFont">Document font</option>
           <option value="traditional">Traditional Arabic</option>
           <option value="typesetting">Arabic Typesetting</option>
           <option value="tahoma">Tahoma</option>
           <option value="arial">Arial</option>
           <option value="segoe">Segoe UI</option>
         </select>
-        <span>פונט</span>
+        <span data-i18n="font">Font</span>
       </label>
       <label class="control">
-        <input id="fontSize" type="range" min="28" max="140" step="1" value="72">
-        <span id="fontSizeLabel">גודל: 72px</span>
+        <input id="fontSize" data-i18n-label="size" aria-label="Size" type="range" min="28" max="140" step="1" value="72">
+        <span id="fontSizeLabel">Size: 72px</span>
       </label>
       <label class="control">
-        <input id="margin" type="range" min="2" max="38" step="1" value="16">
-        <span id="marginLabel">שוליים: 16%</span>
+        <input id="margin" data-i18n-label="margin" aria-label="Margins" type="range" min="2" max="38" step="1" value="16">
+        <span id="marginLabel">Margins: 16%</span>
       </label>
       <label class="control">
-        <input id="speed" type="range" min="1" max="100" step="1" value="30">
-        <span id="speedLabel">מהירות: 30</span>
+        <input id="speed" data-i18n-label="speed" aria-label="Speed" type="range" min="1" max="100" step="1" value="30">
+        <span id="speedLabel">Speed: 30</span>
       </label>
 
       <span class="divider" aria-hidden="true"></span>
-      <button class="tool-button" id="rewind" type="button" aria-label="חזרה להתחלה" title="חזרה להתחלה (Home)">↥</button>
+      <button class="tool-button" id="rewind" type="button" data-i18n-label="rewind" aria-label="Back to start" data-i18n-title="rewindTitle" title="Back to start (Home)">↥</button>
     </nav>
 
-    <section class="stage" id="stage" aria-label="תצוגת טלפרומפטר">
+    <section class="stage" id="stage" data-i18n-label="stage" aria-label="Teleprompter display">
       <div class="scroll-area" id="scrollArea" tabindex="0">
-        <article class="script" id="script"></article>
+        <article class="script" id="script" dir="auto"></article>
       </div>
       <div class="reading-line" aria-hidden="true"></div>
       <div class="status" id="status" role="status" aria-live="polite"></div>
@@ -368,13 +377,13 @@
   <section class="editor-backdrop" id="editorModal" role="dialog" aria-modal="true" aria-labelledby="editorTitle" hidden>
     <div class="editor-panel">
       <div class="editor-title">
-        <h1 id="editorTitle">עריכת טקסט</h1>
-        <span class="saved-note">הטקסט והפונט נשמרים אוטומטית</span>
+        <h1 id="editorTitle" data-i18n="editorTitle">Edit script</h1>
+        <span class="saved-note" data-i18n="autosave">Your script and font are saved automatically</span>
       </div>
-      <textarea id="editor" dir="rtl" spellcheck="true" aria-label="טקסט לטלפרומפטר"></textarea>
+      <textarea id="editor" dir="auto" spellcheck="true" data-i18n-label="script" aria-label="Teleprompter script"></textarea>
       <div class="editor-actions">
-        <span class="hint">אפשר לשלב עברית ו-English באותה שורה • Ctrl+Enter לסיום</span>
-        <button class="primary" id="done" type="button">שמירה והצגה</button>
+        <span class="hint" data-i18n="hint">Mix scripts in the same line. Ctrl / ⌘ + Enter to save.</span>
+        <button class="primary" id="done" type="button" data-i18n="save">Save and display</button>
       </div>
     </div>
   </section>
@@ -384,17 +393,257 @@
       'use strict';
 
       const STORAGE_KEY = 'simple-hebrew-teleprompter-v1';
-      const DEFAULT_TEXT = `ברוכים הבאים לטלפרומפטר.
-
-לחצו על כפתור העריכה כדי להכניס את הטקסט שלכם.
-
-אפשר לשלב מילים באנגלית כמו Hello או Welcome בלי לשבש את כיוון הטקסט.
-
-לחצו על רווח כדי להתחיל ולעצור את הגלילה.`;
+      const messages = {
+        "en": {
+          "title": "Teleprompter",
+          "language": "Interface language",
+          "controls": "Teleprompter controls",
+          "play": "Play",
+          "pause": "Pause",
+          "playTitle": "Play / pause (Space)",
+          "pauseTitle": "Pause (Space)",
+          "edit": "Edit script",
+          "mirrorX": "Mirror horizontally",
+          "mirrorY": "Mirror vertically",
+          "fullscreen": "Fullscreen",
+          "fullscreenTitle": "Fullscreen (F)",
+          "background": "Background color",
+          "textColor": "Text color",
+          "font": "Font",
+          "documentFont": "Document font",
+          "size": "Size",
+          "margin": "Margins",
+          "speed": "Speed",
+          "rewind": "Back to start",
+          "rewindTitle": "Back to start (Home)",
+          "stage": "Teleprompter display",
+          "script": "Teleprompter script",
+          "editorTitle": "Edit script",
+          "autosave": "Your script and font are saved automatically",
+          "hint": "Mix scripts in the same line. Ctrl / ⌘ + Enter to save.",
+          "save": "Save and display",
+          "end": "End of script",
+          "empty": "Open the editor to add your script",
+          "saved": "Script saved",
+          "rewound": "Back at the start",
+          "fullscreenError": "Fullscreen is unavailable in this browser",
+          "welcome": "Welcome to the teleprompter.\n\nOpen the editor to add your script.\n\nPress Space to start or pause scrolling."
+        },
+        "he": {
+          "title": "טלפרומפטר",
+          "language": "שפת הממשק",
+          "controls": "פקדי הטלפרומפטר",
+          "play": "הפעלה",
+          "pause": "השהיה",
+          "playTitle": "הפעלה או השהיה (רווח)",
+          "pauseTitle": "השהיה (רווח)",
+          "edit": "עריכת הטקסט",
+          "mirrorX": "היפוך אופקי",
+          "mirrorY": "היפוך אנכי",
+          "fullscreen": "מסך מלא",
+          "fullscreenTitle": "מסך מלא (F)",
+          "background": "צבע רקע",
+          "textColor": "צבע טקסט",
+          "font": "גופן",
+          "documentFont": "גופן מהמסמך",
+          "size": "גודל",
+          "margin": "שוליים",
+          "speed": "מהירות",
+          "rewind": "חזרה להתחלה",
+          "rewindTitle": "חזרה להתחלה (Home)",
+          "stage": "תצוגת טלפרומפטר",
+          "script": "טקסט לטלפרומפטר",
+          "editorTitle": "עריכת הטקסט",
+          "autosave": "הטקסט והגופן נשמרים אוטומטית",
+          "hint": "אפשר לשלב שפות באותה שורה. Ctrl / ⌘ + Enter לשמירה.",
+          "save": "שמירה והצגה",
+          "end": "הגעת לסוף הטקסט",
+          "empty": "פתחו את העורך כדי להוסיף טקסט",
+          "saved": "הטקסט נשמר",
+          "rewound": "חזרה להתחלה",
+          "fullscreenError": "מסך מלא אינו זמין בדפדפן הזה",
+          "welcome": "ברוכים הבאים לטלפרומפטר.\n\nפתחו את העורך כדי להוסיף את הטקסט שלכם.\n\nלחצו על רווח כדי להתחיל או להשהות את הגלילה."
+        },
+        "ar": {
+          "title": "الملقّن",
+          "language": "لغة الواجهة",
+          "controls": "أدوات التحكم في الملقّن",
+          "play": "تشغيل",
+          "pause": "إيقاف مؤقت",
+          "playTitle": "تشغيل أو إيقاف مؤقت (المسافة)",
+          "pauseTitle": "إيقاف مؤقت (المسافة)",
+          "edit": "تحرير النص",
+          "mirrorX": "انعكاس أفقي",
+          "mirrorY": "انعكاس عمودي",
+          "fullscreen": "ملء الشاشة",
+          "fullscreenTitle": "ملء الشاشة (F)",
+          "background": "لون الخلفية",
+          "textColor": "لون النص",
+          "font": "الخط",
+          "documentFont": "خط المستند",
+          "size": "الحجم",
+          "margin": "الهوامش",
+          "speed": "السرعة",
+          "rewind": "العودة إلى البداية",
+          "rewindTitle": "العودة إلى البداية (Home)",
+          "stage": "شاشة الملقّن",
+          "script": "نص الملقّن",
+          "editorTitle": "تحرير النص",
+          "autosave": "يُحفظ النص والخط تلقائيًا",
+          "hint": "يمكنك مزج اللغات في السطر نفسه. للحفظ اضغط Ctrl / ⌘ + Enter.",
+          "save": "حفظ وعرض",
+          "end": "نهاية النص",
+          "empty": "افتح محرر النص لإضافة نصك",
+          "saved": "تم حفظ النص",
+          "rewound": "العودة إلى البداية",
+          "fullscreenError": "وضع ملء الشاشة غير متاح في هذا المتصفح",
+          "welcome": "مرحبًا بك في الملقّن.\n\nافتح محرر النص لإضافة نصك.\n\nاضغط مفتاح المسافة لبدء التمرير أو إيقافه مؤقتًا."
+        },
+        "de": {
+          "title": "Teleprompter",
+          "language": "Oberflächensprache",
+          "controls": "Teleprompter-Steuerung",
+          "play": "Starten",
+          "pause": "Anhalten",
+          "playTitle": "Starten oder anhalten (Leertaste)",
+          "pauseTitle": "Anhalten (Leertaste)",
+          "edit": "Text bearbeiten",
+          "mirrorX": "Horizontal spiegeln",
+          "mirrorY": "Vertikal spiegeln",
+          "fullscreen": "Vollbild",
+          "fullscreenTitle": "Vollbild (F)",
+          "background": "Hintergrundfarbe",
+          "textColor": "Textfarbe",
+          "font": "Schriftart",
+          "documentFont": "Dokumentschrift",
+          "size": "Größe",
+          "margin": "Ränder",
+          "speed": "Tempo",
+          "rewind": "Zum Anfang",
+          "rewindTitle": "Zum Anfang (Pos1)",
+          "stage": "Teleprompter-Anzeige",
+          "script": "Teleprompter-Text",
+          "editorTitle": "Text bearbeiten",
+          "autosave": "Text und Schriftart werden automatisch gespeichert.",
+          "hint": "Mische Sprachen in einer Zeile. Strg / ⌘ + Eingabetaste zum Speichern.",
+          "save": "Speichern und anzeigen",
+          "end": "Textende",
+          "empty": "Öffne den Editor, um Text hinzuzufügen.",
+          "saved": "Text gespeichert",
+          "rewound": "Zurück am Anfang",
+          "fullscreenError": "Vollbild ist in diesem Browser nicht verfügbar.",
+          "welcome": "Willkommen beim Teleprompter.\n\nÖffne den Editor, um deinen Text einzugeben.\n\nDrücke die Leertaste, um das Scrollen zu starten oder anzuhalten."
+        },
+        "es": {
+          "title": "Teleprompter",
+          "language": "Idioma de la interfaz",
+          "controls": "Controles del teleprompter",
+          "play": "Iniciar",
+          "pause": "Pausar",
+          "playTitle": "Iniciar o pausar (Espacio)",
+          "pauseTitle": "Pausar (Espacio)",
+          "edit": "Editar el texto",
+          "mirrorX": "Reflejar horizontalmente",
+          "mirrorY": "Reflejar verticalmente",
+          "fullscreen": "Pantalla completa",
+          "fullscreenTitle": "Pantalla completa (F)",
+          "background": "Color de fondo",
+          "textColor": "Color del texto",
+          "font": "Fuente",
+          "documentFont": "Fuente del documento",
+          "size": "Tamaño",
+          "margin": "Márgenes",
+          "speed": "Velocidad",
+          "rewind": "Volver al inicio",
+          "rewindTitle": "Volver al inicio (Inicio)",
+          "stage": "Pantalla del teleprompter",
+          "script": "Texto del teleprompter",
+          "editorTitle": "Editar el texto",
+          "autosave": "El texto y la fuente se guardan automáticamente.",
+          "hint": "Mezcla idiomas en una misma línea. Ctrl / ⌘ + Intro para guardar.",
+          "save": "Guardar y mostrar",
+          "end": "Fin del texto",
+          "empty": "Abre el editor para añadir tu texto.",
+          "saved": "Texto guardado",
+          "rewound": "De vuelta al inicio",
+          "fullscreenError": "La pantalla completa no está disponible en este navegador.",
+          "welcome": "Te damos la bienvenida al teleprompter.\n\nAbre el editor para añadir tu texto.\n\nPulsa la barra espaciadora para iniciar o pausar el desplazamiento."
+        },
+        "fr": {
+          "title": "Téléprompteur",
+          "language": "Langue de l’interface",
+          "controls": "Commandes du téléprompteur",
+          "play": "Démarrer",
+          "pause": "Mettre en pause",
+          "playTitle": "Démarrer ou mettre en pause (Espace)",
+          "pauseTitle": "Mettre en pause (Espace)",
+          "edit": "Modifier le texte",
+          "mirrorX": "Miroir horizontal",
+          "mirrorY": "Miroir vertical",
+          "fullscreen": "Plein écran",
+          "fullscreenTitle": "Plein écran (F)",
+          "background": "Couleur de fond",
+          "textColor": "Couleur du texte",
+          "font": "Police",
+          "documentFont": "Police du document",
+          "size": "Taille",
+          "margin": "Marges",
+          "speed": "Vitesse",
+          "rewind": "Retour au début",
+          "rewindTitle": "Retour au début (Début)",
+          "stage": "Écran du téléprompteur",
+          "script": "Texte du téléprompteur",
+          "editorTitle": "Modifier le texte",
+          "autosave": "Le texte et la police sont enregistrés automatiquement.",
+          "hint": "Mélangez les langues sur une même ligne. Ctrl / ⌘ + Entrée pour enregistrer.",
+          "save": "Enregistrer et afficher",
+          "end": "Fin du texte",
+          "empty": "Ouvrez l’éditeur pour ajouter votre texte.",
+          "saved": "Texte enregistré",
+          "rewound": "Retour au début",
+          "fullscreenError": "Le plein écran n’est pas disponible dans ce navigateur.",
+          "welcome": "Bienvenue dans le téléprompteur.\n\nOuvrez l’éditeur pour ajouter votre texte.\n\nAppuyez sur Espace pour lancer ou suspendre le défilement."
+        },
+        "ru": {
+          "title": "Телесуфлёр",
+          "language": "Язык интерфейса",
+          "controls": "Управление телесуфлёром",
+          "play": "Запустить",
+          "pause": "Приостановить",
+          "playTitle": "Запуск или пауза (Пробел)",
+          "pauseTitle": "Пауза (Пробел)",
+          "edit": "Редактировать текст",
+          "mirrorX": "Отразить по горизонтали",
+          "mirrorY": "Отразить по вертикали",
+          "fullscreen": "Полноэкранный режим",
+          "fullscreenTitle": "Полноэкранный режим (F)",
+          "background": "Цвет фона",
+          "textColor": "Цвет текста",
+          "font": "Шрифт",
+          "documentFont": "Шрифт документа",
+          "size": "Размер",
+          "margin": "Поля",
+          "speed": "Скорость",
+          "rewind": "К началу",
+          "rewindTitle": "К началу (Home)",
+          "stage": "Экран телесуфлёра",
+          "script": "Текст телесуфлёра",
+          "editorTitle": "Редактировать текст",
+          "autosave": "Текст и шрифт сохраняются автоматически.",
+          "hint": "На одной строке можно сочетать разные языки. Ctrl / ⌘ + Enter для сохранения.",
+          "save": "Сохранить и показать",
+          "end": "Конец текста",
+          "empty": "Откройте редактор, чтобы добавить текст.",
+          "saved": "Текст сохранён",
+          "rewound": "Возврат к началу",
+          "fullscreenError": "В этом браузере полноэкранный режим недоступен.",
+          "welcome": "Добро пожаловать в телесуфлёр.\n\nОткройте редактор, чтобы добавить текст.\n\nНажмите пробел, чтобы запустить или приостановить прокрутку."
+        }
+      };
 
       const $ = (id) => document.getElementById(id);
       const elements = {
-        app: $('app'), stage: $('stage'), scroll: $('scrollArea'), script: $('script'),
+        language: $('language'), app: $('app'), stage: $('stage'), scroll: $('scrollArea'), script: $('script'),
         play: $('play'), edit: $('edit'), mirrorX: $('mirrorX'), mirrorY: $('mirrorY'),
         fullscreen: $('fullscreen'), rewind: $('rewind'), bgColor: $('bgColor'),
         textColor: $('textColor'), fontSize: $('fontSize'), margin: $('margin'), speed: $('speed'),
@@ -404,7 +653,10 @@
       };
 
       const defaults = {
-        text: DEFAULT_TEXT, bgColor: '#050505', textColor: '#f5f5f5',
+        language: (navigator.languages || [navigator.language])
+          .map(locale => locale?.toLowerCase().split('-')[0])
+          .find(locale => Object.hasOwn(messages, locale)) || 'en',
+        text: null, bgColor: '#050505', textColor: '#f5f5f5',
         fontSize: 72, margin: 16, speed: 30, mirrorX: false, mirrorY: false,
         fontChoice: 'document', documentFont: ''
       };
@@ -420,22 +672,59 @@
       function loadState() {
         try {
           const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
-          return { ...defaults, ...saved };
+          const state = { ...defaults, ...saved };
+          if (!Object.hasOwn(messages, state.language)) state.language = defaults.language;
+          if (typeof state.text !== 'string') state.text = null;
+          return state;
         } catch (_) {
           return { ...defaults };
         }
       }
 
+      function persistState() {
+        clearTimeout(saveTimer);
+        try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch (_) {}
+      }
+
       function saveState() {
         clearTimeout(saveTimer);
-        saveTimer = setTimeout(() => {
-          try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch (_) {}
-        }, 120);
+        saveTimer = setTimeout(persistState, 120);
+      }
+
+      const t = (key) => messages[state.language][key];
+
+      function renderScript() {
+        elements.script.textContent = (state.text ?? t('welcome')) || t('empty');
+      }
+
+      function setPlayLabel() {
+        elements.play.setAttribute('aria-label', t(running ? 'pause' : 'play'));
+        elements.play.title = t(running ? 'pauseTitle' : 'playTitle');
+      }
+
+      function applyLanguage() {
+        const root = document.documentElement;
+        root.lang = state.language;
+        document.title = t('title');
+        root.dir = ['he', 'ar'].includes(state.language) ? 'rtl' : 'ltr';
+        elements.language.value = state.language;
+        for (const node of document.querySelectorAll('[data-i18n]')) {
+          node.textContent = t(node.dataset.i18n);
+        }
+        for (const node of document.querySelectorAll('[data-i18n-label]')) {
+          node.setAttribute('aria-label', t(node.dataset.i18nLabel));
+        }
+        for (const node of document.querySelectorAll('[data-i18n-title]')) {
+          node.title = t(node.dataset.i18nTitle);
+        }
+        setPlayLabel();
+        updateLabels();
+        renderScript();
+        elements.status.classList.remove('show');
       }
 
       function applyState() {
-        elements.script.textContent = state.text;
-        elements.editor.value = state.text;
+        renderScript();
         elements.bgColor.value = state.bgColor;
         elements.textColor.value = state.textColor;
         elements.fontFamily.value = state.fontChoice;
@@ -501,9 +790,9 @@
       }
 
       function updateLabels() {
-        elements.fontSizeLabel.textContent = `גודל: ${state.fontSize}px`;
-        elements.marginLabel.textContent = `שוליים: ${state.margin}%`;
-        elements.speedLabel.textContent = `מהירות: ${state.speed}`;
+        elements.fontSizeLabel.textContent = `${t('size')}: ${state.fontSize}px`;
+        elements.marginLabel.textContent = `${t('margin')}: ${state.margin}%`;
+        elements.speedLabel.textContent = `${t('speed')}: ${state.speed}`;
       }
 
       function showStatus(message) {
@@ -534,7 +823,7 @@
           : elements.scroll.scrollTop <= 0;
         if (reachedEnd) {
           setRunning(false);
-          showStatus('הגעת לסוף הטקסט');
+          showStatus(t('end'));
           return;
         }
         frameId = requestAnimationFrame(tick);
@@ -544,8 +833,7 @@
         running = Boolean(value);
         elements.app.classList.toggle('running', running);
         elements.play.textContent = running ? '❚❚' : '▶';
-        elements.play.setAttribute('aria-label', running ? 'עצירה' : 'הפעלה');
-        elements.play.title = running ? 'עצירה (רווח)' : 'הפעלה (רווח)';
+        setPlayLabel();
         cancelAnimationFrame(frameId);
         previousTime = 0;
         scrollRemainder = 0;
@@ -557,7 +845,7 @@
       function openEditor() {
         setRunning(false);
         elements.modal.hidden = false;
-        elements.editor.value = state.text;
+        elements.editor.value = state.text ?? t('welcome');
         requestAnimationFrame(() => {
           elements.editor.focus();
           elements.editor.setSelectionRange(elements.editor.value.length, elements.editor.value.length);
@@ -566,10 +854,10 @@
 
       function closeEditor() {
         state.text = elements.editor.value;
-        elements.script.textContent = state.text || 'הכניסו טקסט באמצעות כפתור העריכה';
+        renderScript();
         elements.modal.hidden = true;
-        saveState();
-        showStatus('הטקסט נשמר');
+        persistState();
+        showStatus(t('saved'));
         elements.scroll.focus({ preventScroll: true });
       }
 
@@ -579,13 +867,21 @@
         saveState();
       }
 
+      elements.language.addEventListener('change', (event) => {
+        const language = event.target.value;
+        if (!Object.hasOwn(messages, language)) return;
+        state.language = language;
+        applyLanguage();
+        persistState();
+      });
+
       elements.play.addEventListener('click', toggleRunning);
       elements.edit.addEventListener('click', openEditor);
       elements.done.addEventListener('click', closeEditor);
       elements.rewind.addEventListener('click', () => {
         setRunning(false);
         elements.scroll.scrollTop = state.mirrorY ? elements.scroll.scrollHeight : 0;
-        showStatus('חזרה להתחלה');
+        showStatus(t('rewound'));
       });
 
       elements.mirrorX.addEventListener('click', () => setOption('mirrorX', !state.mirrorX));
@@ -599,7 +895,7 @@
         try {
           if (!document.fullscreenElement) await document.documentElement.requestFullscreen();
           else await document.exitFullscreen();
-        } catch (_) { showStatus('הדפדפן חסם מצב מסך מלא'); }
+        } catch (_) { showStatus(t('fullscreenError')); }
       });
 
       document.addEventListener('fullscreenchange', () => {
@@ -654,7 +950,9 @@
           if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) { e.preventDefault(); closeEditor(); }
           return;
         }
-        if (['INPUT', 'TEXTAREA'].includes(document.activeElement?.tagName)) return;
+        const active = document.activeElement?.tagName;
+        if (['INPUT', 'TEXTAREA', 'SELECT'].includes(active)) return;
+        if (e.code === 'Space' && active === 'BUTTON') return;
 
         if (e.code === 'Space') { e.preventDefault(); toggleRunning(); }
         else if (e.key.toLowerCase() === 'f') { e.preventDefault(); elements.fullscreen.click(); }
@@ -672,6 +970,7 @@
         if (document.hidden) setRunning(false);
       });
 
+      applyLanguage();
       applyState();
       elements.scroll.focus({ preventScroll: true });
     })();

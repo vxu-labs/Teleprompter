@@ -17,3 +17,11 @@ script = html.split("<script>", 1)[1].split("</script>", 1)[0]
 print("sha256-" + b64encode(sha256(script.encode("utf-8")).digest()).decode())
 PY
 ```
+
+VXU Labs deploys the hosted copy with Cloudflare Workers Static Assets. For an authorized deployment from the project directory, run:
+
+```sh
+mkdir -p dist
+cp index.html dist/
+wrangler deploy
+```
