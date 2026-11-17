@@ -1,0 +1,11 @@
+.DS_Store
+.env
+.env.*
+/.iphone-transfer/
+/.dip/
+/.agents/
+/.claude/
+/AGENTS.md
+/CLAUDE.md
+/notes/
+/private/
